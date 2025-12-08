@@ -2,12 +2,66 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { cases as initialCases, users } from '../data/mockData';
 import { Search, Filter, Plus, FileText, X, Upload, Gavel } from 'lucide-react';
+import { useCases } from "../context/CaseContext";
+
+
+const NewCaseForm = ({ closeModal }) => {
+  const { addCase } = useCases();
+  const [form, setForm] = useState({
+    id: "",
+    title: "",
+    description: "",
+    status: "Active",
+    nextHearing: "",
+    assignedJudgeId: "",
+    assignedLawyerId: "",
+    clientId: "",
+    documents: []
+  });
+
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!form.id || !form.title) {
+      alert("Case ID and Title are required!");
+      return;
+    }
+
+    addCase(form);
+    alert("Case created successfully!");
+    closeModal();
+  }
+
+  return (
+    <form className="space-y-3" onSubmit={handleSubmit}>
+      <input name="id" placeholder="Case ID" onChange={handleChange} className="border p-2 w-full rounded" />
+      <input name="title" placeholder="Case Title" onChange={handleChange} className="border p-2 w-full rounded" />
+
+      <textarea name="description" placeholder="Case Description" onChange={handleChange} className="border p-2 w-full rounded" />
+
+      <input type="date" name="nextHearing" onChange={handleChange} className="border p-2 w-full rounded" />
+
+      <select name="status" onChange={handleChange} className="border p-2 w-full rounded">
+        <option>Active</option>
+        <option>Pending</option>
+        <option>Closed</option>
+      </select>
+
+      <button className="w-full bg-indigo-600 text-white py-2 rounded">Create Case</button>
+    </form>
+  );
+};
 
 const CaseManagement = () => {
   const { user } = useAuth();
-  const [cases, setCases] = useState(initialCases);
+  const { cases, addCase } = useCases();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCase, setSelectedCase] = useState(null);
+  const [isNewCaseModalOpen, setIsNewCaseModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Filter cases based on role
@@ -60,10 +114,14 @@ const CaseManagement = () => {
             />
           </div>
           {user.role === 'Admin' && (
-            <button className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-              <Plus size={18} />
-              <span className="hidden sm:inline">New Case</span>
-            </button>
+            <button
+  onClick={() => setIsNewCaseModalOpen(true)}
+  className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+>
+  <Plus size={18} />
+  <span className="hidden sm:inline">New Case</span>
+</button>
+
           )}
         </div>
       </div>
@@ -208,7 +266,26 @@ const CaseManagement = () => {
           )}
         </div>
       </div>
+       {isNewCaseModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-xl">
+            
+            <div className="flex justify-between mb-4">
+              <h3 className="text-lg font-bold">Create New Case</h3>
+              <button onClick={() => setIsNewCaseModalOpen(false)}>
+                <X size={20} className="text-gray-500 hover:text-gray-700" />
+              </button>
+            </div>
+
+            <NewCaseForm closeModal={() => setIsNewCaseModalOpen(false)} />
+          </div>
+        </div>
+      )}
+
     </div>
+
+    
+    
   );
 };
 
