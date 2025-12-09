@@ -147,6 +147,19 @@ export default function NewCase() {
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
+            <div>
+  <label className="font-semibold text-gray-700 mb-1 block">Upload Documents</label>
+
+  <input
+    type="file"
+    multiple
+    onChange={(e) =>
+      setForm({ ...form, documents: [...e.target.files] })
+    }
+    className="border p-3 w-full rounded-lg shadow bg-gray-50"
+  />
+</div>
+
           </div>
         </div>
 
