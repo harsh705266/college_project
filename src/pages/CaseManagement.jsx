@@ -230,22 +230,30 @@ const CaseManagement = () => {
                     </h4>
 
                     <div className="space-y-2">
-                      {selectedCase.documents.map(doc => (
-                        <div
-                          key={doc.id}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border"
-                        >
-                          <div className="flex items-center gap-3">
-                            <FileText size={18} className="text-gray-400" />
-                            <div>
-                              <p className="text-sm font-medium text-gray-700">{doc.name}</p>
-                              <p className="text-xs text-gray-400">{doc.date}</p>
-                            </div>
-                          </div>
+            {selectedCase.documents.map((doc, index) => (
+  <div
+    key={index}
+    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border"
+  >
+    <div className="flex items-center gap-3">
+      <FileText size={18} className="text-gray-400" />
+      <div>
+        <p className="text-sm font-medium text-gray-700">{doc.name}</p>
+        <p className="text-xs text-gray-400">{doc.date}</p>
+      </div>
+    </div>
 
-                          <button className="text-indigo-600 text-xs">View</button>
-                        </div>
-                      ))}
+    <a
+      href={doc.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-indigo-600 text-xs hover:underline"
+    >
+      View
+    </a>
+  </div>
+))}
+
 
                       {selectedCase.documents.length === 0 && (
                         <p className="text-sm text-gray-400 italic">No documents attached.</p>

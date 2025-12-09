@@ -151,13 +151,18 @@ export default function NewCase() {
   <label className="font-semibold text-gray-700 mb-1 block">Upload Documents</label>
 
   <input
-    type="file"
-    multiple
-    onChange={(e) =>
-      setForm({ ...form, documents: [...e.target.files] })
-    }
-    className="border p-3 w-full rounded-lg shadow bg-gray-50"
-  />
+  type="file"
+  multiple
+  onChange={(e) => {
+    const fileArray = Array.from(e.target.files).map(file => ({
+      name: file.name,
+      url: URL.createObjectURL(file)
+    }));
+    setForm({ ...form, documents: fileArray });
+  }}
+  className="border p-3 w-full rounded-lg shadow bg-gray-50"
+/>
+
 </div>
 
           </div>
